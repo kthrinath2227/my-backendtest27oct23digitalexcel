@@ -266,3 +266,15 @@ app.put('/updateSubcontrol/:subcontrolId', async (req, res) => {
  *         description: Element not found
  */
 
+
+app.get('/standards', async (req, res) => {
+  try {
+    const standards = await Standard.find({}, 'standard'); // Retrieve all standards and only select the 'standard' field
+    const standardNames = standards.map(standard => standard.standard);
+    res.json(standardNames);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch standards' });
+  }
+});
+
