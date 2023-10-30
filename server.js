@@ -1,19 +1,57 @@
-const express=require('express');
-const app=express()
+const express =  require('express');
+const app = express()
 const cors=require('cors')
-//require('./swagger')(app);
+
 app.use(cors())
 app.use(express.json())//middleware
-// app.use(cors)
+
 const mongoose=require('mongoose')
 const {Standard}=require('./model')
-//mongoose.connect("mongodb://localhost:27017").then((e)=>console.log("mongodb connected ")).catch((e)=>console.log("unable to connect"))
 app.listen(3000,()=>console.log("server is running"))
 app.get('/',(req,res)=>res.send("welcome to india"))
 mongoose.connect("mongodb://127.0.0.1:27017/inotebook").then((e)=>console.log("mongodb connected ")).catch((e)=>console.log(e))
 
+// login page code
+const UserSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+})
+const User = mongoose.model('User', UserSchema);
 
- 
+
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+app.post('/register', async (req, res) => {
+  const { email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = new User({ email, password: hashedPassword });
+  await user.save();
+  res.send({ message: 'Registered successfully' });
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(400).send({ error: 'Invalid email or password' });
+  }
+  const token = jwt.sign({ userId: user.id }, 'SECRET_KEY', { expiresIn: '1h' });
+  res.send({ token });
+});
+
+
+
+
+
+
+
+
+
+// table data content 
+
+
 app.post('/addProduct',async (req,res)=>{
 try {
     const { standard, controls } = req.body;
@@ -82,6 +120,8 @@ app.delete('/deleteSubcontrol/:subcontrolId', async (req, res) => {
     }
 
     const control = standard.controls.find((c) => c.subcontrols.some((sc) => sc._id == subcontrolId));
+
+  
     if (!control) {
       return res.status(404).json({ message: 'No subcontrols found for the specified ID' });
     }
