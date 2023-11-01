@@ -7,7 +7,9 @@ app.use(express.json())//middleware
 
 const mongoose=require('mongoose')
 const {Standard}=require('./model')
-app.listen(3000,()=>console.log("server is running"))
+const PORT=process.env.PORT|8000
+const DB_URI=process.env.DB_URI
+app.listen(PORT,()=>console.log("server is running"))
 app.get('/',(req,res)=>res.send("welcome to india"))
 mongoose.connect("mongodb://127.0.0.1:27017/inotebook").then((e)=>console.log("mongodb connected ")).catch((e)=>console.log(e))
 
