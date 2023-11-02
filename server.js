@@ -4,14 +4,9 @@ const cors=require('cors')
 const bodyParser=require('body-parser')
 app.use(cors())
 app.use(express.json())//middleware
-
-
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json({extended:true}))
-
-
-
-const DB_URI="mongodb+srv://saikandula9278:Thrinath@123@3nathdb.6v7h34i.mongodb.net/"
+const DB_URI="mongodb+srv://saikandula9278:Fn3PyI977OA9WO04@3nathdb.6v7h34i.mongodb.net/"
 const mongoose=require('mongoose')
 const {Standard}=require('./model')
 const PORT=process.env.PORT||8000;
@@ -25,8 +20,6 @@ const UserSchema = new mongoose.Schema({
   password: String,
 })
 const User = mongoose.model('User', UserSchema);
-
-
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
