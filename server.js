@@ -1,17 +1,23 @@
 const express =  require('express');
 const app = express()
 const cors=require('cors')
-
+const bodyParser=require('body-parser')
 app.use(cors())
 app.use(express.json())//middleware
 
+
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json({extended:true}))
+
+
+
+const DB_URI="mongodb+srv://saikandula9278:Thrinath@123@3nathdb.6v7h34i.mongodb.net/"
 const mongoose=require('mongoose')
 const {Standard}=require('./model')
-const PORT=process.env.PORT|8000
-const DB_URI=process.env.DB_URI
-app.listen(PORT,()=>console.log("server is running"))
+const PORT=process.env.PORT||8000;
+app.listen(PORT,()=>console.log(`server is running on ${PORT}`))
 app.get('/',(req,res)=>res.send("welcome to india"))
-mongoose.connect("mongodb://127.0.0.1:27017/inotebook").then((e)=>console.log("mongodb connected ")).catch((e)=>console.log(e))
+mongoose.connect(DB_URI).then((e)=>console.log("mongodb connected ")).catch((e)=>console.log(e))
 
 // login page code
 const UserSchema = new mongoose.Schema({
@@ -279,4 +285,3 @@ app.get('/standards', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch standards' });
   }
 });
-
